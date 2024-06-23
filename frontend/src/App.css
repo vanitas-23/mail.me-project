@@ -207,8 +207,6 @@ body {
   border: 1px solid #444; /* Dark border */
   border-radius: 4px; /* Rounded corners */
 }
-/* App.css */
-
 .template-section {
   margin-top: 20px;
   padding: 20px;
@@ -243,7 +241,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 .template-box:hover{
-  background-color: #00ffff;
+  background-color: #03dac6;
   color: #000000;
 }
 
