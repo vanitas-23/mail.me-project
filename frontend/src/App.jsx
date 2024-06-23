@@ -42,13 +42,6 @@ const DataSection = ({ data, handleDataChange }) => (
 const InputSection = ({ inputText, handleInputChange, customHeader, customFooter, handleCustomChange }) => (
   <div className="section input-section">
     <div className="section-title">INPUT <FaLevelDownAlt /></div>
-    <h4>ADD CONTENT</h4>
-    <textarea
-      className="input-textarea"
-      placeholder="Enter your text here"
-      value={inputText}
-      onChange={handleInputChange}
-    />
     <h4>ADD CUSTOM HEADER</h4>
     <div className="custom-inputs">
       <input
@@ -59,6 +52,14 @@ const InputSection = ({ inputText, handleInputChange, customHeader, customFooter
         onChange={handleCustomChange}
       />
     </div>
+    <h4>ADD CONTENT</h4>
+    <textarea
+      className="input-textarea"
+      placeholder="Enter your text here"
+      value={inputText}
+      onChange={handleInputChange}
+    />
+    
     <h4>ADD CUSTOM FOOTER</h4>
     <input
       type="text"
@@ -130,6 +131,91 @@ const EmailSection = ({ email, handleEmailChange, handleSendClick }) => (
   </div>
 );
 
+const TemplateSection = () => (
+  <div className="section template-section">
+    <div className="section-title">TEMPLATE</div>
+    <div className="template-boxes">
+      <div className="template-box">
+        NEWS <br />
+        <textarea className='textboxx'  readOnly value="Subject: Exciting News from Company X!
+
+Discover our latest [Product/Feature]. Stay updated with our progress. Visit [Website/Store] for more." />
+          <button className='copybtn' onClick={() => copyToClipboard(`
+Subject: Exciting News from Company X!
+
+Discover our latest [Product/Feature]. Stay updated with our progress. Visit [Website/Store] for more.
+`)
+
+}>COPY</button>
+        
+      </div>
+      <div className="template-box">
+        OFFER <br />
+        <textarea className='textboxx'  readOnly value="Subject: Don't Miss Out! Sale at Company X
+
+Shop now for exclusive discounts on [Product/Service].
+Limited time offer. Visit [Website/Store] today!" />
+        <button  className='copybtn' onClick={() =>copyToClipboard(`
+Subject: Don't Miss Out! Sale at Company X
+
+Shop now for exclusive discounts on [Product/Service].
+Limited time offer. Visit [Website/Store] today!
+`)}>COPY</button>
+      </div>
+
+
+      <div className="template-box">
+        INVITATION <br />
+        <textarea className='textboxx'  readOnly value="Subject: Join Us! Event at Company X
+
+You're invited to [Event Name] on [Date].
+Don't miss out—RSVP by [RSVP Date]. See you there!" />
+        <button className='copybtn' onClick={() => copyToClipboard(`
+Subject: Join Us! Event at Company X
+
+You're invited to [Event Name] on [Date].
+Don't miss out—RSVP by [RSVP Date]. See you there!
+`)
+
+}>COPY</button>
+      </div>
+      <div className="template-box">
+        WELCOME <br />
+        
+        <textarea className='textboxx'  readOnly value="Subject: Welcome to Company X!
+
+We're excited to welcome [New Employee's Name] to our team.
+Get ready to make a difference starting [Start Date]." />
+        <button className='copybtn' onClick={() => copyToClipboard(`
+Subject: Welcome to Company X!
+
+We're excited to welcome [New Employee's Name] to our team.
+Get ready to make a difference starting [Start Date].
+`)}>COPY</button>
+      </div>
+
+      <div className="template-box">
+        PROMOTIONAL <br />
+        <textarea className='textboxx'  readOnly value="Subject: Congratulations! Promotion at Company X
+
+Celebrate [Employee's Name]'s promotion to [New Position]. 
+Join us in congratulating them on their achievement." />
+        <button className='copybtn' onClick={() => copyToClipboard(`
+Subject: Congratulations! Promotion at Company X
+
+Celebrate [Employee's Name]'s promotion to [New Position]. 
+Join us in congratulating them on their achievement.
+`)}>COPY</button>
+      </div>
+    </div>
+  </div>
+);
+
+const copyToClipboard = (content) => {
+  navigator.clipboard.writeText(content)
+    .then(() => alert("Content copied to clipboard"))
+    .catch((error) => console.error("Failed to copy:", error));
+};
 function App() {
   const [data, setData] = useState({ name: '', id: '', category: '' });
   const [inputText, setInputText] = useState('');
@@ -219,7 +305,6 @@ function App() {
   };
 
   const handleButtonClick = () => {
-    // Replace 'https://example.com' with the actual URL you want to open
     window.open('http://localhost:5173/', '_blank');
   };
 
@@ -242,9 +327,11 @@ function App() {
         <div className="lower">
           <button className="single-button" onClick={handleButtonClick}>CHAT UP!</button>
         </div>
+        <TemplateSection />
       </div>
     </div>
   );
 }
 
 export default App;
+
