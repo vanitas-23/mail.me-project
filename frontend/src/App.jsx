@@ -89,27 +89,6 @@ const PreviewSection = ({ preview }) => (
   </div>
 );
 
-const ChatSection = ({ chatInput, handleChatInputChange, handleChatClick, chatHistory }) => (
-  <div className="section chat-section">
-    <div className="section-title">CHAT</div>
-    <div className="chat-inputs">
-      <input
-        type="text"
-        name="chatInput"
-        placeholder="Enter your message"
-        value={chatInput}
-        onChange={handleChatInputChange}
-      />
-      <button className="chat-button" onClick={handleChatClick}>Go</button>
-    </div>
-    <textarea
-      className="chat-history"
-      readOnly
-      value={chatHistory}
-    />
-  </div>
-);
-
 const EmailSection = ({ email, handleEmailChange, handleSendClick }) => (
   <div className="section email-section">
     <div className="section-title">EMAIL <FaMailBulk /></div>
@@ -130,92 +109,34 @@ const EmailSection = ({ email, handleEmailChange, handleSendClick }) => (
     <button className="send-button" onClick={handleSendClick}>SEND <FaCheck /></button>
   </div>
 );
-
-const TemplateSection = () => (
+const TemplateSection = ({ handleTemplateClick }) => (
   <div className="section template-section">
     <div className="section-title">TEMPLATE</div>
     <div className="template-boxes">
-      <div className="template-box">
+      <div className="template-box" onClick={() => handleTemplateClick('NEWS')}>
         NEWS <br />
-        <textarea className='textboxx'  readOnly value="Subject: Exciting News from Company X!
-
-Discover our latest [Product/Feature]. Stay updated with our progress. Visit [Website/Store] for more." />
-          <button className='copybtn' onClick={() => copyToClipboard(`
-Subject: Exciting News from Company X!
-
-Discover our latest [Product/Feature]. Stay updated with our progress. Visit [Website/Store] for more.
-`)
-
-}>COPY</button>
-        
       </div>
-      <div className="template-box">
+      <div className="template-box" onClick={() => handleTemplateClick('OFFER')}>
         OFFER <br />
-        <textarea className='textboxx'  readOnly value="Subject: Don't Miss Out! Sale at Company X
-
-Shop now for exclusive discounts on [Product/Service].
-Limited time offer. Visit [Website/Store] today!" />
-        <button  className='copybtn' onClick={() =>copyToClipboard(`
-Subject: Don't Miss Out! Sale at Company X
-
-Shop now for exclusive discounts on [Product/Service].
-Limited time offer. Visit [Website/Store] today!
-`)}>COPY</button>
       </div>
-
-
-      <div className="template-box">
+      <div className="template-box" onClick={() => handleTemplateClick('INVITATION')}>
         INVITATION <br />
-        <textarea className='textboxx'  readOnly value="Subject: Join Us! Event at Company X
-
-You're invited to [Event Name] on [Date].
-Don't miss out—RSVP by [RSVP Date]. See you there!" />
-        <button className='copybtn' onClick={() => copyToClipboard(`
-Subject: Join Us! Event at Company X
-
-You're invited to [Event Name] on [Date].
-Don't miss out—RSVP by [RSVP Date]. See you there!
-`)
-
-}>COPY</button>
       </div>
-      <div className="template-box">
+      <div className="template-box" onClick={() => handleTemplateClick('WELCOME')}>
         WELCOME <br />
-        
-        <textarea className='textboxx'  readOnly value="Subject: Welcome to Company X!
-
-We're excited to welcome [New Employee's Name] to our team.
-Get ready to make a difference starting [Start Date]." />
-        <button className='copybtn' onClick={() => copyToClipboard(`
-Subject: Welcome to Company X!
-
-We're excited to welcome [New Employee's Name] to our team.
-Get ready to make a difference starting [Start Date].
-`)}>COPY</button>
       </div>
-
-      <div className="template-box">
+      <div className="template-box" onClick={() => handleTemplateClick('PROMOTIONAL')}>
         PROMOTIONAL <br />
-        <textarea className='textboxx'  readOnly value="Subject: Congratulations! Promotion at Company X
-
-Celebrate [Employee's Name]'s promotion to [New Position]. 
-Join us in congratulating them on their achievement." />
-        <button className='copybtn' onClick={() => copyToClipboard(`
-Subject: Congratulations! Promotion at Company X
-
-Celebrate [Employee's Name]'s promotion to [New Position]. 
-Join us in congratulating them on their achievement.
-`)}>COPY</button>
       </div>
     </div>
   </div>
 );
-
 const copyToClipboard = (content) => {
   navigator.clipboard.writeText(content)
     .then(() => alert("Content copied to clipboard"))
     .catch((error) => console.error("Failed to copy:", error));
 };
+
 function App() {
   const [data, setData] = useState({ name: '', id: '', category: '' });
   const [inputText, setInputText] = useState('');
@@ -305,7 +226,47 @@ function App() {
   };
 
   const handleButtonClick = () => {
+    // Replace 'https://example.com' with the actual URL you want to open
     window.open('http://localhost:5173/', '_blank');
+  };
+  const handleTemplateClick = (template) => {
+    let header = '';
+    let content = '';
+    let footer = '';
+
+    switch (template) {
+      case 'NEWS':
+        header = 'Latest News for {name}';
+        content = 'Here are the latest updates and news...';
+        footer = 'Stay tuned for more news.';
+        break;
+      case 'OFFER':
+        header = 'Special Offer for {name}';
+        content = 'We are excited to offer you...';
+        footer = 'Don’t miss out on this special offer!';
+        break;
+      case 'INVITATION':
+        header = 'You’re Invited, {name}';
+        content = 'We are pleased to invite you to...';
+        footer = 'We look forward to seeing you!';
+        break;
+      case 'WELCOME':
+        header = 'Welcome {name}!';
+        content = 'We are thrilled to welcome you...';
+        footer = 'Thanks for joining us!';
+        break;
+      case 'PROMOTIONAL':
+        header = 'Exclusive Promotion for {name}';
+        content = 'Check out our latest promotion...';
+        footer = 'Enjoy your shopping!';
+        break;
+      default:
+        break;
+    }
+
+    setCustomHeader(header);
+    setInputText(content);
+    setCustomFooter(footer);
   };
 
   return (
@@ -327,11 +288,10 @@ function App() {
         <div className="lower">
           <button className="single-button" onClick={handleButtonClick}>CHAT UP!</button>
         </div>
-        <TemplateSection />
+        <TemplateSection handleTemplateClick={handleTemplateClick} />
       </div>
     </div>
   );
 }
 
 export default App;
-
