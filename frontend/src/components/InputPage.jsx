@@ -14,6 +14,7 @@ const InputPage = ({ inputText, handleInputChange, customHeader, customFooter, h
         onChange={handleCustomChange}
       />
     </div>
+    
     <h4>ADD CONTENT</h4>
     <textarea
       className="input-textarea"

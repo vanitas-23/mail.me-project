@@ -2,10 +2,17 @@ const asyncHandler = require('express-async-handler');
 const Email = require('../models/emailModel');
 
 const getEmails = asyncHandler(async (req, res) => {
-    const emails = await Email.find({ user_id: req.body.user_id }, 'text to createdAt');
-    res.status(200).json(emails);
-});
-
+    try {
+      const emails = await Email.find(
+        { user_id: req.body.user_id },
+        'name id category text to createdAt'
+      );
+      res.status(200).json(emails);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch emails' });
+    }
+  });
+  
 const createEmail = async (req, res) => {
     const { name, id, category, text, to, user_id } = req.body;
     if (!name || !id || !category || !text || !to) { 
