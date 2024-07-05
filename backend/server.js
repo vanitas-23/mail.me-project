@@ -14,7 +14,7 @@ app.use(express.json());
 // Use emailRoutes instead of contactRoutes
 app.use("/api/emails", require("./routes/emailRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
-
+app.use("/api/templates", require("./routes/templateRoutes"));
 app.use(errorHandler);
 
 app.listen(port, () => {

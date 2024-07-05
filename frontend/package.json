@@ -24,6 +24,7 @@
     "react-markdown": "^9.0.1",
     "react-parallax": "^3.5.1",
     "react-router-dom": "^6.23.1",
+    "reactjs-popup": "^2.0.6",
     "remixicon": "^4.3.0"
   },
   "devDependencies": {

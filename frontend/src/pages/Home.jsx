@@ -7,9 +7,10 @@ import {
   FaMailBulk,
 } from "react-icons/fa";
 import { FaCheck, FaUsersViewfinder } from "react-icons/fa6";
+import Popup from 'reactjs-popup';
 import CanvasTextEditor from "./CanvasTextEditor.jsx";
 import styles from "../css/Home.module.css";
-
+import { useNavigate } from "react-router-dom";
 function NavBar() {
   const navStyles = {
     backgroundColor: '#1f1f1f',
@@ -186,43 +187,110 @@ const EmailSection = ({ email, handleEmailChange, handleSendClick }) => (
   </div>
 );
 
-const TemplateSection = ({ handleTemplateClick }) => (
-  <div className={`${styles.section} ${styles["template-section"]}`}>
-    <div className={styles["section-title"]}>TEMPLATE</div>
-    <div className={styles["template-boxes"]}>
-      <div
-        className={styles["template-box"]}
-        onClick={() => handleTemplateClick("NEWS")}
-      >
-        NEWS <br />
+const TemplateSection = ({ handleTemplateClick }) => {
+  const [templates, setTemplates] = useState([]);
+  const [showAddTemplateModal, setShowAddTemplateModal] = useState(false);
+  const [newTemplate, setNewTemplate] = useState({
+    type: '',
+    header: '',
+    content: '',
+    footer: ''
+  });
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        const accessToken = localStorage.getItem("authToken");
+        const response = await axios.get("http://localhost:5001/api/templates/get", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setTemplates(response.data);
+      } catch (error) {
+        console.error("Error fetching templates:", error);
+      }
+    };
+
+    fetchTemplates();
+  }, []); 
+
+  const openModal = () => setShowAddTemplateModal(true);
+  const closeModal = () => setShowAddTemplateModal(false);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setNewTemplate({
+      ...newTemplate,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const accessToken = localStorage.getItem("authToken");
+      const response = await axios.post("http://localhost:5001/api/templates/create", newTemplate, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log('New template added:', response.data);
+      window.location.reload();
+      closeModal(); 
+    } catch (error) {
+      console.error('Error adding template:', error);
+    }
+  };
+
+  return (
+    <div className={`${styles.section} ${styles["template-section"]}`}>
+      <div className={styles["section-title"]}>TEMPLATE</div>
+      <div className={styles["template-boxes"]}>
+        {templates.map((template) => (
+          <div
+            key={template._id}
+            className={styles["template-box"]}
+            onClick={() => handleTemplateClick(template)}
+          >
+            {template.type.toUpperCase()} <br />
+          </div>
+        ))}
       </div>
-      <div
-        className={styles["template-box"]}
-        onClick={() => handleTemplateClick("OFFER")}
-      >
-        OFFER <br />
-      </div>
-      <div
-        className={styles["template-box"]}
-        onClick={() => handleTemplateClick("INVITATION")}
-      >
-        INVITATION <br />
-      </div>
-      <div
-        className={styles["template-box"]}
-        onClick={() => handleTemplateClick("WELCOME")}
-      >
-        WELCOME <br />
-      </div>
-      <div
-        className={styles["template-box"]}
-        onClick={() => handleTemplateClick("PROMOTIONAL")}
-      >
-        PROMOTIONAL <br />
-      </div>
+
+      <button onClick={openModal} className={styles["single-button"]}>
+        Add Template
+      </button>
+
+      <Popup open={showAddTemplateModal} closeOnDocumentClick onClose={closeModal}>
+        <div className="modal" style={{ width: '100%', padding: '20px' ,backgroundColor:'white','color':'black'}}>
+          <button className="close" onClick={closeModal}>&times;</button>
+          <div className="header" style={{ fontSize: '1.5em', marginBottom: '10px' }}>Add New Template</div>
+          <div className="content">
+            <div>
+              <label>Type:</label>
+              <input type="text" name="type" value={newTemplate.type} onChange={handleInputChange} style={{ width: '100%', padding: '5px', marginBottom: '10px' }} />
+            </div>
+            <div>
+              <label>Header:</label>
+              <input type="text" name="header" value={newTemplate.header} onChange={handleInputChange} style={{ width: '100%', padding: '5px', marginBottom: '10px' }} />
+            </div>
+            <div>
+              <label>Content:</label>
+              <textarea name="content" value={newTemplate.content} onChange={handleInputChange} style={{ width: '100%', padding: '5px', marginBottom: '10px', minHeight: '100px' }} />
+            </div>
+            <div>
+              <label>Footer:</label>
+              <input type="text" name="footer" value={newTemplate.footer} onChange={handleInputChange} style={{ width: '100%', padding: '5px', marginBottom: '10px' }} />
+            </div>
+          </div>
+          <div className="actions">
+            <button className={styles["single-button"]} onClick={handleSubmit} style={{ marginRight: '10px' }}>Submit</button>
+          </div>
+        </div>
+      </Popup>
     </div>
-  </div>
-);
+  );
+};
 
 const copyToClipboard = (content) => {
   navigator.clipboard
@@ -232,6 +300,7 @@ const copyToClipboard = (content) => {
 };
 
 function Home() {
+  const navigate = useNavigate();
   const [data, setData] = useState({ name: "", id: "", category: "" });
   const [inputText, setInputText] = useState("");
   const [email, setEmail] = useState({ to: "", cc: "" });
@@ -322,6 +391,7 @@ function Home() {
 
     if (!token) {
       console.error("No token found, authorization denied");
+      
       return;
     }
     const excelData = {
@@ -349,59 +419,29 @@ function Home() {
       .catch((error) => {
         console.error("Failed to save data:", error);
         alert("Failed to save data: " + error.message);
+        navigate('/start');
       });
   };
 
   const handleButtonClick = () => {
-    // Replace 'https://example.com' with the actual URL you want to open
+  
     window.open("http://localhost:5174/", "_blank");
   };
 
   const handleTemplateClick = (template) => {
-    let header = "";
-    let content = "";
-    let footer = "";
-
-    switch (template) {
-      case "NEWS":
-        header = "Latest News for {name}";
-        content = "Here are the latest updates and news...";
-        footer = "Stay tuned for more news.";
-        break;
-      case "OFFER":
-        header = "Special Offer for {name}";
-        content = "We are excited to offer you...";
-        footer = "Don’t miss out on this special offer!";
-        break;
-      case "INVITATION":
-        header = "You’re Invited, {name}";
-        content = "We are pleased to invite you to...";
-        footer = "We look forward to seeing you!";
-        break;
-      case "WELCOME":
-        header = "Welcome {name}!";
-        content = "We are thrilled to welcome you...";
-        footer = "Thanks for joining us!";
-        break;
-      case "PROMOTIONAL":
-        header = "Exclusive Promotion for {name}";
-        content = "Check out our latest promotion...";
-        footer = "Enjoy your shopping!";
-        break;
-      default:
-        break;
-    }
-
+    let header = template.header;
+    let content = template.content;
+    let footer = template.footer;
     setCustomHeader(header);
     setInputText(content);
     setCustomFooter(footer);
   };
 
   useEffect(() => {
-    // Set the background color of the body when the component mounts
+  
     document.body.style.backgroundColor = "#333";
 
-    // Reset the background color when the component unmounts
+  
     return () => {
       document.body.style.backgroundColor = "";
     };
@@ -438,6 +478,7 @@ function Home() {
           </button>
         </div>
         <TemplateSection handleTemplateClick={handleTemplateClick} />
+        
       </div>
     </div>
   );
