@@ -77,8 +77,8 @@ npm run dev
 ### 3⃣ Set Up Environment Variables
 Create a `.env` file in the **backend** directory with the following:
 ```
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+CONNECTION_STRING=your_mongodb_connection_string
+ACCESS_TOKEN=your_secret_key
 PORT=5001
 ```
 
