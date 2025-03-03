@@ -66,12 +66,12 @@ cd mail.me-project
 #### Backend:
 ```sh
 cd backend
-npm install
+nodemon
 ```
 #### Frontend:
 ```sh
 cd frontend
-npm install
+npm run dev
 ```
 
 ### 3⃣ Set Up Environment Variables
