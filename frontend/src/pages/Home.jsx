@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Chat from "./Chat.jsx";
 import axios from "axios";
 import {
   FaMarker,
@@ -422,10 +423,9 @@ function Home() {
         navigate('/start');
       });
   };
-
+  const [showChat, setShowChat] = useState(false);
   const handleButtonClick = () => {
-  
-    window.open("http://localhost:5174/", "_blank");
+  setShowChat((prev) => !prev);
   };
 
   const handleTemplateClick = (template) => {
@@ -476,6 +476,7 @@ function Home() {
           >
             CHAT UP!
           </button>
+          {showChat && <Chat />}
         </div>
         <TemplateSection handleTemplateClick={handleTemplateClick} />
         
